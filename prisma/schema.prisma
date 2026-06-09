@@ -1,0 +1,77 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Filme {
+  id            Int      @id @default(autoincrement())
+  titulo        String
+  genero        String
+  descricao     String   @default("")
+  classificacao String
+  duracao       Int
+  estreia       String
+  criadoEm      DateTime @default(now())
+  atualizadoEm  DateTime @updatedAt
+
+  sessoes Sessao[]
+}
+
+model Sala {
+  id           Int      @id @default(autoincrement())
+  nome         String   @unique
+  capacidade   Int
+  tipo         String
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  sessoes Sessao[]
+}
+
+model Sessao {
+  id           Int      @id @default(autoincrement())
+  dataHora     String
+  preco        Float
+  idioma       String
+  formato      String   @default("2D")
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+
+  filmeId Int
+  salaId  Int
+
+  filme     Filme      @relation(fields: [filmeId], references: [id], onDelete: Cascade)
+  sala      Sala       @relation(fields: [salaId], references: [id], onDelete: Cascade)
+  ingressos Ingresso[]
+
+  @@unique([salaId, dataHora])
+}
+
+model Ingresso {
+  id          Int      @id @default(autoincrement())
+  nomeCliente String
+  cpf         String
+  assento     String
+  pagamento   String
+  dataVenda   DateTime @default(now())
+
+  sessaoId Int
+  sessao   Sessao @relation(fields: [sessaoId], references: [id], onDelete: Cascade)
+
+  @@unique([sessaoId, assento])
+  @@index([sessaoId])
+}
+
+model Lanche {
+  id           Int      @id @default(autoincrement())
+  nome         String
+  preco        Float
+  categoria    String
+  descricao    String   @default("")
+  disponivel   Boolean  @default(true)
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
+}
