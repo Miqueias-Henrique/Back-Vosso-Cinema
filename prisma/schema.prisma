@@ -1,9 +1,11 @@
 generator client {
-  provider = "prisma-client-js"
+  provider     = "prisma-client"
+  output       = "../src/generated/prisma"
+  moduleFormat = "cjs"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 model Filme {
@@ -14,8 +16,8 @@ model Filme {
   classificacao String
   duracao       Int
   estreia       String
-  criadoEm      DateTime @default(now())
-  atualizadoEm  DateTime @updatedAt
+  criadoEm     DateTime @default(now())
+  atualizadoEm DateTime @updatedAt
 
   sessoes Sessao[]
 }

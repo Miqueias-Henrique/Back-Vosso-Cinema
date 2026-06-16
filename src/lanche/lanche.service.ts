@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateLancheDto } from './dto/create-lanche.dto';
 import { UpdateLancheDto } from './dto/update-lanche.dto';
@@ -7,45 +7,23 @@ import { UpdateLancheDto } from './dto/update-lanche.dto';
 export class LancheService {
   constructor(private prisma: PrismaService) {}
 
-  create(dto: CreateLancheDto) {
-    const { nome, preco, categoria, descricao, disponivel } = dto;
-    if (!nome || !preco || !categoria) {
-      throw new BadRequestException('Campos obrigatórios: nome, preco, categoria.');
-    }
-    return this.prisma.lanche.create({
-      data: {
-        nome,
-        preco: parseFloat(String(preco)),
-        categoria,
-        descricao: descricao || '',
-        disponivel: disponivel !== false,
-      },
-    });
+  create(createLancheDto: CreateLancheDto) {
+    return this.prisma.lanche.create({ data: createLancheDto });
   }
 
   findAll() {
-    return this.prisma.lanche.findMany({ orderBy: { categoria: 'asc' } });
+    return this.prisma.lanche.findMany();
   }
 
   findOne(id: number) {
-    return this.prisma.lanche.findUnique({ where: { id: Number(id) } });
+    return this.prisma.lanche.findUnique({ where: { id } });
   }
 
-  update(id: number, dto: UpdateLancheDto) {
-    const { nome, preco, categoria, descricao, disponivel } = dto;
-    return this.prisma.lanche.update({
-      where: { id: Number(id) },
-      data: {
-        nome,
-        preco: preco ? parseFloat(String(preco)) : undefined,
-        categoria,
-        descricao,
-        disponivel,
-      },
-    });
+  update(id: number, updateLancheDto: UpdateLancheDto) {
+    return this.prisma.lanche.update({ where: { id }, data: updateLancheDto });
   }
 
   remove(id: number) {
-    return this.prisma.lanche.delete({ where: { id: Number(id) } });
+    return this.prisma.lanche.delete({ where: { id } });
   }
 }

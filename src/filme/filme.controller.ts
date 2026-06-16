@@ -1,18 +1,20 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { FilmeService } from './filme.service';
 import { CreateFilmeDto } from './dto/create-filme.dto';
 import { UpdateFilmeDto } from './dto/update-filme.dto';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('filmes')
-@Controller('api/filmes')
+@Controller('filmes')
 export class FilmeController {
   constructor(private readonly filmeService: FilmeService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Criar um novo filme' })
-  create(@Body() dto: CreateFilmeDto) {
-    return this.filmeService.create(dto);
+  @ApiOperation({ summary: 'Cadastrar um novo filme' })
+  @ApiResponse({ status: 201, description: 'Filme criado com sucesso.' })
+  @ApiResponse({ status: 400, description: 'Dados inválidos.' })
+  create(@Body() createFilmeDto: CreateFilmeDto) {
+    return this.filmeService.create(createFilmeDto);
   }
 
   @Get()
@@ -27,10 +29,10 @@ export class FilmeController {
     return this.filmeService.findOne(+id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Atualizar um filme' })
-  update(@Param('id') id: string, @Body() dto: UpdateFilmeDto) {
-    return this.filmeService.update(+id, dto);
+  update(@Param('id') id: string, @Body() updateFilmeDto: UpdateFilmeDto) {
+    return this.filmeService.update(+id, updateFilmeDto);
   }
 
   @Delete(':id')

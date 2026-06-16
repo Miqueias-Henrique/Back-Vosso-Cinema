@@ -1,18 +1,20 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { SalaService } from './sala.service';
 import { CreateSalaDto } from './dto/create-sala.dto';
 import { UpdateSalaDto } from './dto/update-sala.dto';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('salas')
-@Controller('api/salas')
+@Controller('salas')
 export class SalaController {
   constructor(private readonly salaService: SalaService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Criar uma nova sala' })
-  create(@Body() dto: CreateSalaDto) {
-    return this.salaService.create(dto);
+  @ApiOperation({ summary: 'Cadastrar uma nova sala' })
+  @ApiResponse({ status: 201, description: 'Sala criada com sucesso.' })
+  @ApiResponse({ status: 400, description: 'Dados inválidos.' })
+  create(@Body() createSalaDto: CreateSalaDto) {
+    return this.salaService.create(createSalaDto);
   }
 
   @Get()
@@ -27,10 +29,10 @@ export class SalaController {
     return this.salaService.findOne(+id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Atualizar uma sala' })
-  update(@Param('id') id: string, @Body() dto: UpdateSalaDto) {
-    return this.salaService.update(+id, dto);
+  update(@Param('id') id: string, @Body() updateSalaDto: UpdateSalaDto) {
+    return this.salaService.update(+id, updateSalaDto);
   }
 
   @Delete(':id')

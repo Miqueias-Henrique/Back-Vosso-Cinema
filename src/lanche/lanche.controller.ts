@@ -1,18 +1,20 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { LancheService } from './lanche.service';
 import { CreateLancheDto } from './dto/create-lanche.dto';
 import { UpdateLancheDto } from './dto/update-lanche.dto';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('lanches')
-@Controller('api/lanches')
+@Controller('lanches')
 export class LancheController {
   constructor(private readonly lancheService: LancheService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Criar um novo lanche' })
-  create(@Body() dto: CreateLancheDto) {
-    return this.lancheService.create(dto);
+  @ApiOperation({ summary: 'Cadastrar um novo lanche' })
+  @ApiResponse({ status: 201, description: 'Lanche cadastrado com sucesso.' })
+  @ApiResponse({ status: 400, description: 'Dados inválidos.' })
+  create(@Body() createLancheDto: CreateLancheDto) {
+    return this.lancheService.create(createLancheDto);
   }
 
   @Get()
@@ -27,10 +29,10 @@ export class LancheController {
     return this.lancheService.findOne(+id);
   }
 
-  @Put(':id')
+  @Patch(':id')
   @ApiOperation({ summary: 'Atualizar um lanche' })
-  update(@Param('id') id: string, @Body() dto: UpdateLancheDto) {
-    return this.lancheService.update(+id, dto);
+  update(@Param('id') id: string, @Body() updateLancheDto: UpdateLancheDto) {
+    return this.lancheService.update(+id, updateLancheDto);
   }
 
   @Delete(':id')

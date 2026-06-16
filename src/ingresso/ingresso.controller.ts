@@ -1,17 +1,20 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { IngressoService } from './ingresso.service';
 import { CreateIngressoDto } from './dto/create-ingresso.dto';
+import { UpdateIngressoDto } from './dto/update-ingresso.dto';
+import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 
 @ApiTags('ingressos')
-@Controller('api/ingressos')
+@Controller('ingressos')
 export class IngressoController {
   constructor(private readonly ingressoService: IngressoService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Comprar um ingresso' })
-  create(@Body() dto: CreateIngressoDto) {
-    return this.ingressoService.create(dto);
+  @ApiOperation({ summary: 'Emitir um novo ingresso' })
+  @ApiResponse({ status: 201, description: 'Ingresso emitido com sucesso.' })
+  @ApiResponse({ status: 400, description: 'Dados inválidos.' })
+  create(@Body() createIngressoDto: CreateIngressoDto) {
+    return this.ingressoService.create(createIngressoDto);
   }
 
   @Get()
@@ -24,6 +27,12 @@ export class IngressoController {
   @ApiOperation({ summary: 'Buscar um ingresso pelo ID' })
   findOne(@Param('id') id: string) {
     return this.ingressoService.findOne(+id);
+  }
+
+  @Patch(':id')
+  @ApiOperation({ summary: 'Atualizar um ingresso' })
+  update(@Param('id') id: string, @Body() updateIngressoDto: UpdateIngressoDto) {
+    return this.ingressoService.update(+id, updateIngressoDto);
   }
 
   @Delete(':id')
