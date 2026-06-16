@@ -1,3 +1,261 @@
-﻿# Back Vosso Cinema
+# 🎬 Vosso Cinema — Backend
 
- Por problemas tecnicos (não sei fazer comit pelo terminal) peço para mudar a branch pra crud
+API REST para gerenciamento de um sistema de cinema, desenvolvida com **NestJS**, **Prisma** e **PostgreSQL**.
+
+---
+
+## 🚀 Tecnologias
+
+- [NestJS](https://nestjs.com/) — framework Node.js
+- [Prisma](https://www.prisma.io/) — ORM
+- [PostgreSQL](https://www.postgresql.org/) — banco de dados
+- [Swagger](https://swagger.io/) — documentação automática da API
+- [TypeScript](https://www.typescriptlang.org/)
+
+---
+
+## 📋 Pré-requisitos
+
+Antes de começar, você precisa ter instalado:
+
+- [Node.js](https://nodejs.org/) v18 ou superior
+- [npm](https://www.npmjs.com/)
+- [PostgreSQL](https://www.postgresql.org/download/) rodando localmente ou em nuvem
+
+---
+
+## ⚙️ Como rodar o projeto
+
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/seu-usuario/vosso-cinema-backend.git
+cd vosso-cinema-backend
+```
+
+### 2. Instale as dependências
+
+```bash
+npm install
+```
+
+### 3. Configure as variáveis de ambiente
+
+Copie o arquivo de exemplo e preencha com seus dados:
+
+```bash
+cp .env.example .env
+```
+
+Abra o `.env` e edite a string de conexão com o seu PostgreSQL:
+
+```env
+DATABASE_URL="postgresql://usuario:senha@localhost:5432/vosso_cinema"
+```
+
+> 💡 Se ainda não criou o banco, rode no psql: `CREATE DATABASE vosso_cinema;`
+
+### 4. Gere o client do Prisma
+
+```bash
+npx prisma generate
+```
+
+### 5. Rode as migrations (cria as tabelas no banco)
+
+```bash
+npx prisma migrate deploy
+```
+
+### 6. (Opcional) Popule o banco com dados iniciais
+
+```bash
+npm run seed
+```
+
+Isso vai inserir filmes, salas, sessões e lanches de exemplo para você testar a API.
+
+### 7. Inicie o servidor
+
+```bash
+npm run start:dev
+```
+
+O servidor estará disponível em:
+
+- **API:** `http://localhost:3000`
+- **Swagger (documentação):** `http://localhost:3000/api`
+
+---
+
+## 📁 Estrutura do projeto
+
+```
+src/
+├── filme/          # Cadastro e gerenciamento de filmes
+├── sala/           # Cadastro e gerenciamento de salas
+├── sessao/         # Sessões (filme + sala + horário)
+├── ingresso/       # Emissão de ingressos
+├── lanche/         # Cardápio de lanches
+└── prisma/         # Conexão com o banco de dados
+
+prisma/
+├── schema.prisma   # Modelos do banco de dados
+├── migrations/     # Histórico de migrações
+└── seed.ts         # Dados iniciais para desenvolvimento
+```
+
+---
+
+## 🗂️ Rotas da API
+
+Todas as rotas seguem o padrão REST. A documentação interativa completa está disponível no Swagger em `/api`.
+
+### 🎥 Filmes — `/filmes`
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `POST` | `/filmes` | Cadastrar novo filme |
+| `GET` | `/filmes` | Listar todos os filmes |
+| `GET` | `/filmes/:id` | Buscar filme por ID |
+| `PATCH` | `/filmes/:id` | Atualizar filme |
+| `DELETE` | `/filmes/:id` | Remover filme |
+
+**Exemplo de body para criar um filme:**
+```json
+{
+  "titulo": "Duna: Parte Dois",
+  "genero": "Ficção Científica",
+  "descricao": "Paul Atreides se une aos Fremen.",
+  "classificacao": "14",
+  "duracao": 166,
+  "estreia": "2024-03-01"
+}
+```
+
+---
+
+### 🏛️ Salas — `/salas`
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `POST` | `/salas` | Cadastrar nova sala |
+| `GET` | `/salas` | Listar todas as salas |
+| `GET` | `/salas/:id` | Buscar sala por ID |
+| `PATCH` | `/salas/:id` | Atualizar sala |
+| `DELETE` | `/salas/:id` | Remover sala |
+
+**Exemplo de body para criar uma sala:**
+```json
+{
+  "nome": "Sala 1 - IMAX",
+  "capacidade": 120,
+  "tipo": "IMAX"
+}
+```
+
+---
+
+### 🎞️ Sessões — `/sessoes`
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `POST` | `/sessoes` | Cadastrar nova sessão |
+| `GET` | `/sessoes` | Listar todas as sessões |
+| `GET` | `/sessoes/:id` | Buscar sessão por ID |
+| `PATCH` | `/sessoes/:id` | Atualizar sessão |
+| `DELETE` | `/sessoes/:id` | Remover sessão |
+
+**Exemplo de body para criar uma sessão:**
+```json
+{
+  "filmeId": 1,
+  "salaId": 1,
+  "dataHora": "2025-07-10T14:00:00",
+  "preco": 45.00,
+  "idioma": "Dublado",
+  "formato": "IMAX"
+}
+```
+
+---
+
+### 🎟️ Ingressos — `/ingressos`
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `POST` | `/ingressos` | Emitir novo ingresso |
+| `GET` | `/ingressos` | Listar todos os ingressos |
+| `GET` | `/ingressos/:id` | Buscar ingresso por ID |
+| `PATCH` | `/ingressos/:id` | Atualizar ingresso |
+| `DELETE` | `/ingressos/:id` | Cancelar ingresso |
+
+**Exemplo de body para emitir um ingresso:**
+```json
+{
+  "sessaoId": 1,
+  "nomeCliente": "João Silva",
+  "cpf": "123.456.789-00",
+  "assento": "A1",
+  "pagamento": "Cartão de Crédito"
+}
+```
+
+---
+
+### 🍿 Lanches — `/lanches`
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `POST` | `/lanches` | Cadastrar novo lanche |
+| `GET` | `/lanches` | Listar todos os lanches |
+| `GET` | `/lanches/:id` | Buscar lanche por ID |
+| `PATCH` | `/lanches/:id` | Atualizar lanche |
+| `DELETE` | `/lanches/:id` | Remover lanche |
+
+**Exemplo de body para cadastrar um lanche:**
+```json
+{
+  "nome": "Pipoca Grande",
+  "preco": 22.00,
+  "categoria": "Pipoca",
+  "descricao": "Pipoca salgada ou doce tamanho família",
+  "disponivel": true
+}
+```
+
+---
+
+## 🧪 Scripts disponíveis
+
+| Comando | Descrição |
+|---------|-----------|
+| `npm run start:dev` | Inicia em modo desenvolvimento com hot-reload |
+| `npm run start:prod` | Inicia em modo produção |
+| `npm run build` | Compila o projeto |
+| `npm run seed` | Popula o banco com dados de exemplo |
+| `npm run test` | Roda os testes unitários |
+| `npm run test:e2e` | Roda os testes end-to-end |
+| `npx prisma generate` | Gera o client do Prisma |
+| `npx prisma migrate deploy` | Aplica as migrations no banco |
+| `npx prisma studio` | Abre o painel visual do banco de dados |
+
+---
+
+## 🗄️ Banco de dados
+
+O projeto usa **PostgreSQL** com as seguintes tabelas:
+
+- **Filme** — catálogo de filmes em cartaz
+- **Sala** — salas do cinema (IMAX, 3D, VIP etc.)
+- **Sessao** — combinação de filme + sala + horário
+- **Ingresso** — venda de ingressos por sessão e assento
+- **Lanche** — cardápio de lanches e combos
+
+> Para visualizar e editar os dados diretamente, rode `npx prisma studio` e acesse `http://localhost:5555`.
+
+---
+
+## 📄 Licença
+
+Este projeto está sob a licença MIT.
