@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { LancheService } from './lanche.service';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateLancheDto } from './dto/create-lanche.dto';
 import { UpdateLancheDto } from './dto/update-lanche.dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { LancheService } from './lanche.service';
 
 @ApiTags('lanches')
 @Controller('lanches')
@@ -25,19 +25,22 @@ export class LancheController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Buscar um lanche pelo ID' })
-  findOne(@Param('id') id: string) {
-    return this.lancheService.findOne(+id);
+  @ApiResponse({ status: 404, description: 'Lanche não encontrado.' })
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.lancheService.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Atualizar um lanche' })
-  update(@Param('id') id: string, @Body() updateLancheDto: UpdateLancheDto) {
-    return this.lancheService.update(+id, updateLancheDto);
+  @ApiResponse({ status: 404, description: 'Lanche não encontrado.' })
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateLancheDto: UpdateLancheDto) {
+    return this.lancheService.update(id, updateLancheDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Remover um lanche' })
-  remove(@Param('id') id: string) {
-    return this.lancheService.remove(+id);
+  @ApiResponse({ status: 404, description: 'Lanche não encontrado.' })
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.lancheService.remove(id);
   }
 }

@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { SalaService } from './sala.service';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateSalaDto } from './dto/create-sala.dto';
 import { UpdateSalaDto } from './dto/update-sala.dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { SalaService } from './sala.service';
 
 @ApiTags('salas')
 @Controller('salas')
@@ -25,19 +25,22 @@ export class SalaController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Buscar uma sala pelo ID' })
-  findOne(@Param('id') id: string) {
-    return this.salaService.findOne(+id);
+  @ApiResponse({ status: 404, description: 'Sala não encontrada.' })
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.salaService.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Atualizar uma sala' })
-  update(@Param('id') id: string, @Body() updateSalaDto: UpdateSalaDto) {
-    return this.salaService.update(+id, updateSalaDto);
+  @ApiResponse({ status: 404, description: 'Sala não encontrada.' })
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateSalaDto: UpdateSalaDto) {
+    return this.salaService.update(id, updateSalaDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Remover uma sala' })
-  remove(@Param('id') id: string) {
-    return this.salaService.remove(+id);
+  @ApiResponse({ status: 404, description: 'Sala não encontrada.' })
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.salaService.remove(id);
   }
 }

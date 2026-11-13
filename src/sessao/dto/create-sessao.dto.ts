@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 
 export class CreateSessaoDto {
   @ApiProperty({ example: '2024-05-10T20:00:00', description: 'Data e hora da sessão' })
@@ -9,6 +9,7 @@ export class CreateSessaoDto {
 
   @ApiProperty({ example: 35.0, description: 'Preço do ingresso' })
   @IsNumber()
+  @IsPositive()
   preco: number;
 
   @ApiProperty({ example: 'Português', description: 'Idioma da sessão' })
@@ -23,9 +24,11 @@ export class CreateSessaoDto {
 
   @ApiProperty({ example: 1, description: 'ID do filme' })
   @IsInt()
+  @IsPositive()
   filmeId: number;
 
   @ApiProperty({ example: 1, description: 'ID da sala' })
   @IsInt()
+  @IsPositive()
   salaId: number;
 }

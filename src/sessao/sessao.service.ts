@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateSessaoDto } from './dto/create-sessao.dto';
 import { UpdateSessaoDto } from './dto/update-sessao.dto';
 
 @Injectable()
 export class SessaoService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   create(createSessaoDto: CreateSessaoDto) {
     return this.prisma.sessao.create({ data: createSessaoDto });
@@ -15,15 +15,21 @@ export class SessaoService {
     return this.prisma.sessao.findMany();
   }
 
-  findOne(id: number) {
-    return this.prisma.sessao.findUnique({ where: { id } });
+  async findOne(id: number) {
+    const sessao = await this.prisma.sessao.findUnique({ where: { id } });
+    if (!sessao) {
+      throw new NotFoundException(`Sessão #${id} não encontrada.`);
+    }
+    return sessao;
   }
 
-  update(id: number, updateSessaoDto: UpdateSessaoDto) {
+  async update(id: number, updateSessaoDto: UpdateSessaoDto) {
+    await this.findOne(id);
     return this.prisma.sessao.update({ where: { id }, data: updateSessaoDto });
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    await this.findOne(id);
     return this.prisma.sessao.delete({ where: { id } });
   }
 }

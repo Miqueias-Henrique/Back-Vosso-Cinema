@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateLancheDto } from './dto/create-lanche.dto';
 import { UpdateLancheDto } from './dto/update-lanche.dto';
 
 @Injectable()
 export class LancheService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   create(createLancheDto: CreateLancheDto) {
     return this.prisma.lanche.create({ data: createLancheDto });
@@ -15,15 +15,21 @@ export class LancheService {
     return this.prisma.lanche.findMany();
   }
 
-  findOne(id: number) {
-    return this.prisma.lanche.findUnique({ where: { id } });
+  async findOne(id: number) {
+    const lanche = await this.prisma.lanche.findUnique({ where: { id } });
+    if (!lanche) {
+      throw new NotFoundException(`Lanche #${id} não encontrado.`);
+    }
+    return lanche;
   }
 
-  update(id: number, updateLancheDto: UpdateLancheDto) {
+  async update(id: number, updateLancheDto: UpdateLancheDto) {
+    await this.findOne(id);
     return this.prisma.lanche.update({ where: { id }, data: updateLancheDto });
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    await this.findOne(id);
     return this.prisma.lanche.delete({ where: { id } });
   }
 }

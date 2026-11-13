@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString } from 'class-validator';
 
 export class CreateLancheDto {
   @ApiProperty({ example: 'Pipoca Grande' })
@@ -9,6 +9,7 @@ export class CreateLancheDto {
 
   @ApiProperty({ example: 18.5, description: 'Preço unitário' })
   @IsNumber()
+  @IsPositive()
   preco: number;
 
   @ApiProperty({ example: 'Salgado', description: 'Categoria do lanche' })

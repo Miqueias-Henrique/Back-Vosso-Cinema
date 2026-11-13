@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsPositive, IsString } from 'class-validator';
 
 export class CreateIngressoDto {
   @ApiProperty({ example: 'João Silva' })
@@ -24,5 +24,6 @@ export class CreateIngressoDto {
 
   @ApiProperty({ example: 1, description: 'ID da sessão' })
   @IsInt()
+  @IsPositive()
   sessaoId: number;
 }
