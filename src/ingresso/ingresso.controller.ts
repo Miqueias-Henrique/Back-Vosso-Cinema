@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { IngressoService } from './ingresso.service';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateIngressoDto } from './dto/create-ingresso.dto';
 import { UpdateIngressoDto } from './dto/update-ingresso.dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { IngressoService } from './ingresso.service';
 
 @ApiTags('ingressos')
 @Controller('ingressos')
@@ -25,19 +25,22 @@ export class IngressoController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Buscar um ingresso pelo ID' })
-  findOne(@Param('id') id: string) {
-    return this.ingressoService.findOne(+id);
+  @ApiResponse({ status: 404, description: 'Ingresso não encontrado.' })
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.ingressoService.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Atualizar um ingresso' })
-  update(@Param('id') id: string, @Body() updateIngressoDto: UpdateIngressoDto) {
-    return this.ingressoService.update(+id, updateIngressoDto);
+  @ApiResponse({ status: 404, description: 'Ingresso não encontrado.' })
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateIngressoDto: UpdateIngressoDto) {
+    return this.ingressoService.update(id, updateIngressoDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Cancelar um ingresso' })
-  remove(@Param('id') id: string) {
-    return this.ingressoService.remove(+id);
+  @ApiResponse({ status: 404, description: 'Ingresso não encontrado.' })
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.ingressoService.remove(id);
   }
 }

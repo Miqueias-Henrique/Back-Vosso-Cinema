@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsOptional, IsPositive, IsString } from 'class-validator';
 
 export class CreateFilmeDto {
   @ApiProperty({ example: 'Interestelar' })
@@ -24,6 +24,7 @@ export class CreateFilmeDto {
 
   @ApiProperty({ example: 169, description: 'Duração em minutos' })
   @IsInt()
+  @IsPositive()
   duracao: number;
 
   @ApiProperty({ example: '2014-11-07' })

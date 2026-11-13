@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { IsInt, IsNotEmpty, IsPositive, IsString } from 'class-validator';
 
 export class CreateSalaDto {
   @ApiProperty({ example: 'Sala 1' })
@@ -9,6 +9,7 @@ export class CreateSalaDto {
 
   @ApiProperty({ example: 120, description: 'Capacidade total de assentos' })
   @IsInt()
+  @IsPositive()
   capacidade: number;
 
   @ApiProperty({ example: 'IMAX', description: 'Tipo da sala (ex: 2D, 3D, IMAX)' })

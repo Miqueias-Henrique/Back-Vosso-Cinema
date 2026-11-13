@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateIngressoDto } from './dto/create-ingresso.dto';
 import { UpdateIngressoDto } from './dto/update-ingresso.dto';
 
 @Injectable()
 export class IngressoService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   create(createIngressoDto: CreateIngressoDto) {
     return this.prisma.ingresso.create({ data: createIngressoDto });
@@ -15,15 +15,21 @@ export class IngressoService {
     return this.prisma.ingresso.findMany();
   }
 
-  findOne(id: number) {
-    return this.prisma.ingresso.findUnique({ where: { id } });
+  async findOne(id: number) {
+    const ingresso = await this.prisma.ingresso.findUnique({ where: { id } });
+    if (!ingresso) {
+      throw new NotFoundException(`Ingresso #${id} não encontrado.`);
+    }
+    return ingresso;
   }
 
-  update(id: number, updateIngressoDto: UpdateIngressoDto) {
+  async update(id: number, updateIngressoDto: UpdateIngressoDto) {
+    await this.findOne(id);
     return this.prisma.ingresso.update({ where: { id }, data: updateIngressoDto });
   }
 
-  remove(id: number) {
+  async remove(id: number) {
+    await this.findOne(id);
     return this.prisma.ingresso.delete({ where: { id } });
   }
 }

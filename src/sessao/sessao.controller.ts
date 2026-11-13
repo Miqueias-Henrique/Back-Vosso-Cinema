@@ -1,8 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { SessaoService } from './sessao.service';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
+import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateSessaoDto } from './dto/create-sessao.dto';
 import { UpdateSessaoDto } from './dto/update-sessao.dto';
-import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { SessaoService } from './sessao.service';
 
 @ApiTags('sessoes')
 @Controller('sessoes')
@@ -25,19 +25,22 @@ export class SessaoController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Buscar uma sessão pelo ID' })
-  findOne(@Param('id') id: string) {
-    return this.sessaoService.findOne(+id);
+  @ApiResponse({ status: 404, description: 'Sessão não encontrada.' })
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.sessaoService.findOne(id);
   }
 
   @Patch(':id')
   @ApiOperation({ summary: 'Atualizar uma sessão' })
-  update(@Param('id') id: string, @Body() updateSessaoDto: UpdateSessaoDto) {
-    return this.sessaoService.update(+id, updateSessaoDto);
+  @ApiResponse({ status: 404, description: 'Sessão não encontrada.' })
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateSessaoDto: UpdateSessaoDto) {
+    return this.sessaoService.update(id, updateSessaoDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Remover uma sessão' })
-  remove(@Param('id') id: string) {
-    return this.sessaoService.remove(+id);
+  @ApiResponse({ status: 404, description: 'Sessão não encontrada.' })
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.sessaoService.remove(id);
   }
 }
