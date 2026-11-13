@@ -1,4 +1,4 @@
-# Back-Vosso-Cinema
+# vosso-cinema-api
 
 API REST para gestão de cinema (filmes, salas, sessões, ingressos e lanches), desenvolvida com NestJS, Prisma ORM e PostgreSQL.
 
